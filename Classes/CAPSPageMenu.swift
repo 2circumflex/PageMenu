@@ -423,7 +423,7 @@ open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecogn
           
             buttonView.frame = CGRect(x: 0, y: menuHeight, width: self.view.frame.width, height: 70)
             menuBottomButton.frame = CGRect(x: 10, y: 10, width: self.view.frame.width - 20, height: 50)
-            controllerScrollView.frame = CGRect(x: 0, y: menuHeight + 70, width: self.view.frame.width, height: self.view.frame.height)
+            controllerScrollView.frame = CGRect(x: 0, y: menuHeight + 70, width: self.view.frame.width, height: self.view.frame.height - 70)
         }
         
         // Disable scroll bars
@@ -1028,7 +1028,12 @@ open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecogn
         
         newVC.willMove(toParent: self)
         
-        newVC.view.frame = CGRect(x: self.view.frame.width * CGFloat(index), y: menuHeight, width: self.view.frame.width, height: self.view.frame.height - menuHeight)
+        if !addBottomButton {
+          
+          newVC.view.frame = CGRect(x: self.view.frame.width * CGFloat(index), y: menuHeight, width: self.view.frame.width, height: self.view.frame.height - menuHeight)
+        } else {
+          newVC.view.frame = CGRect(x: self.view.frame.width * CGFloat(index), y: menuHeight + 70, width: self.view.frame.width, height: self.view.frame.height - 70 - menuHeight)
+        }
         
         self.addChild(newVC)
         self.controllerScrollView.addSubview(newVC.view)
@@ -1104,7 +1109,11 @@ open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecogn
             }
             
             for view : UIView in controllerScrollView.subviews {
-                view.frame = CGRect(x: self.view.frame.width * CGFloat(currentPageIndex), y: menuHeight, width: controllerScrollView.frame.width, height: self.view.frame.height - menuHeight)
+                if !addBottomButton {
+                  view.frame = CGRect(x: self.view.frame.width * CGFloat(currentPageIndex), y: menuHeight, width: controllerScrollView.frame.width, height: self.view.frame.height - menuHeight)
+                } else {
+                  view.frame = CGRect(x: self.view.frame.width * CGFloat(currentPageIndex), y: menuHeight - 70, width: controllerScrollView.frame.width, height: self.view.frame.height - menuHeight - 70)
+                }
             }
             
             let xOffset : CGFloat = CGFloat(self.currentPageIndex) * controllerScrollView.frame.width
