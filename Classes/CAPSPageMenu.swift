@@ -24,6 +24,7 @@ import UIKit
     
     @objc optional func willMoveToPage(_ controller: UIViewController, index: Int)
     @objc optional func didMoveToPage(_ controller: UIViewController, index: Int)
+    @objc optional func didButtonTapped()
 }
 
 class MenuItemView: UIView {
@@ -94,6 +95,11 @@ public enum CAPSPageMenuOption {
     case iconIndicatorView(UIView)
     case showStepperView(Bool)
     case kerning(CGFloat)
+    case addMenuBottomButton(Bool)
+    case setmenuBottomButtonTitle(String)
+    case menuBottomButtonTitleColor(UIColor)
+    case menuBottomButtonBackgroundColor(UIColor)
+    case menuBottomButtonBorderColor(UIColor)
 }
 
 open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
@@ -105,6 +111,15 @@ open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecogn
     var controllerArray : [UIViewController] = []
     var menuItems : [MenuItemView] = []
     var menuItemWidths : [CGFloat] = []
+    let buttonView = UIView()
+    let menuBottomButton: UIButton = {
+      let button = UIButton()
+      button.layer.borderWidth = 1
+      button.addTarget(self,
+                       action: #selector(didButtonTapped),
+                       for: .touchUpInside)
+      return button
+    }()
     
     open var menuHeight : CGFloat = 34.0
     open var menuMargin : CGFloat = 15.0
@@ -180,6 +195,12 @@ open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecogn
     open weak var delegate : CAPSPageMenuDelegate?
     
     var tapTimer : Timer?
+  
+    var addBottomButton: Bool = false
+    var buttonTitle: String = ""
+    var buttonBackgroundColor: UIColor = UIColor.white
+    var buttonTitleColor: UIColor = UIColor.black
+    var buttonBorderColor: UIColor = UIColor.clear
     
     enum CAPSPageMenuScrollDirection : Int {
         case left
@@ -282,6 +303,16 @@ open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecogn
                     showStepperView = value
                 case let .kerning(value):
                     kerning = value
+                case let .addMenuBottomButton(value):
+                    addBottomButton = value
+                case let .menuBottomButtonTitleColor(value):
+                    buttonTitleColor = value
+                case let .menuBottomButtonBackgroundColor(value):
+                    buttonBackgroundColor = value
+                case let .setmenuBottomButtonTitle(value):
+                    buttonTitle = value
+                case let .menuBottomButtonBorderColor(value):
+                    buttonBorderColor = value
                 }
             }
             
@@ -373,6 +404,18 @@ open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecogn
             menuScrollView.layer.shadowOpacity = menuShadowOpacity
             menuScrollView.layer.shadowOffset = CGSize(width:0, height:menuShadowOffset)
             menuScrollView.layer.masksToBounds = true
+        }
+      
+        if addBottomButton {
+            menuBottomButton.setTitle(buttonTitle, for: .normal)
+            menuBottomButton.setTitleColor(buttonTitleColor, for: .normal)
+            menuBottomButton.backgroundColor = buttonBackgroundColor
+            menuBottomButton.layer.borderColor = buttonBorderColor.cgColor
+            buttonView.addSubview(menuBottomButton)
+            self.view.addSubview(buttonView)
+            buttonView.frame = CGRect(x: 0, y: menuHeight, width: self.view.frame.width, height: 70)
+            menuBottomButton.frame = CGRect(x: 10, y: 10, width: self.view.frame.width - 20, height: 50)
+            controllerScrollView.frame = CGRect(x: 0, y: menuHeight + 70, width: self.view.frame.width, height: self.view.frame.height)
         }
         
         // Disable scroll bars
@@ -814,7 +857,10 @@ open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecogn
         // Empty out pages in dictionary
         pagesAddedDictionary.removeAll(keepingCapacity: false)
     }
-    
+  
+    func didButtonTapped() {
+      delegate?.didButtonTapped?()
+    }
     
     // MARK: - Handle Selection Indicator
     func moveSelectionIndicator(_ pageIndex: Int) {
