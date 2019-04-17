@@ -100,6 +100,7 @@ public enum CAPSPageMenuOption {
     case menuBottomButtonTitleColor(UIColor)
     case menuBottomButtonBackgroundColor(UIColor)
     case menuBottomButtonBorderColor(UIColor)
+    case menuBottomButtonViewBackgroundColor(UIColor)
 }
 
 open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
@@ -201,6 +202,7 @@ open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecogn
     var buttonBackgroundColor: UIColor = UIColor.white
     var buttonTitleColor: UIColor = UIColor.black
     var buttonBorderColor: UIColor = UIColor.clear
+    var buttonViewBackgroundColor: UIColor = UIColor.gray
     
     enum CAPSPageMenuScrollDirection : Int {
         case left
@@ -313,6 +315,8 @@ open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecogn
                     buttonTitle = value
                 case let .menuBottomButtonBorderColor(value):
                     buttonBorderColor = value
+                case let .menuBottomButtonViewBackgroundColor(value):
+                  buttonViewBackgroundColor = value
                 }
             }
             
@@ -411,8 +415,12 @@ open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecogn
             menuBottomButton.setTitleColor(buttonTitleColor, for: .normal)
             menuBottomButton.backgroundColor = buttonBackgroundColor
             menuBottomButton.layer.borderColor = buttonBorderColor.cgColor
+          
+            buttonView.backgroundColor = buttonViewBackgroundColor
+          
             buttonView.addSubview(menuBottomButton)
             self.view.addSubview(buttonView)
+          
             buttonView.frame = CGRect(x: 0, y: menuHeight, width: self.view.frame.width, height: 70)
             menuBottomButton.frame = CGRect(x: 10, y: 10, width: self.view.frame.width - 20, height: 50)
             controllerScrollView.frame = CGRect(x: 0, y: menuHeight + 70, width: self.view.frame.width, height: self.view.frame.height)
@@ -858,7 +866,7 @@ open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecogn
         pagesAddedDictionary.removeAll(keepingCapacity: false)
     }
   
-    func didButtonTapped() {
+  @objc func didButtonTapped() {
       delegate?.didButtonTapped?()
     }
     
