@@ -101,6 +101,7 @@ public enum CAPSPageMenuOption {
     case menuBottomButtonBackgroundColor(UIColor)
     case menuBottomButtonBorderColor(UIColor)
     case menuBottomButtonViewBackgroundColor(UIColor)
+    case menuBottomButtonCornerRadius(CGFloat)
 }
 
 open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
@@ -203,6 +204,7 @@ open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecogn
     var buttonTitleColor: UIColor = UIColor.black
     var buttonBorderColor: UIColor = UIColor.clear
     var buttonViewBackgroundColor: UIColor = UIColor.gray
+    var buttonCornerRadius: CGFloat = 0
     
     enum CAPSPageMenuScrollDirection : Int {
         case left
@@ -317,6 +319,8 @@ open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecogn
                     buttonBorderColor = value
                 case let .menuBottomButtonViewBackgroundColor(value):
                   buttonViewBackgroundColor = value
+                case let .menuBottomButtonCornerRadius(value):
+                  buttonCornerRadius = value
                 }
             }
             
@@ -415,6 +419,7 @@ open class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecogn
             menuBottomButton.setTitleColor(buttonTitleColor, for: .normal)
             menuBottomButton.backgroundColor = buttonBackgroundColor
             menuBottomButton.layer.borderColor = buttonBorderColor.cgColor
+            menuBottomButton.layer.cornerRadius = buttonCornerRadius
           
             buttonView.backgroundColor = buttonViewBackgroundColor
           
